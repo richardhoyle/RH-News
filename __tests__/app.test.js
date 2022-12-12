@@ -38,26 +38,26 @@ describe("GET /api/topics", () => {
   });
 });
 
-describe("GET /api/articles", () => {
-  test("responds with an array of article objects with various properties", () => {
-    return request(app)
-      .get("/api/articles")
-      .expect(200)
-      .then(({ body: { articles } }) => {
-        expect(articles).toBeInstanceOf(Array);
-        articles.forEach((article) => {
-          expect(article).toEqual(
-            expect.objectContaining({
-              author: expect.any(String),
-              title: expect.any(String),
-              article_id: expect.any(Number),
-              topic: expect.any(String),
-              created_at: expect.any(String),
-              votes: expect.any(Number),
-              comment_count: expect.any(Number),
-            })
-          );
-        });
-      });
-  });
-});
+// describe("GET /api/articles", () => {
+//   test("responds with an array of article objects with various properties", () => {
+//     return request(app)
+//       .get("/api/articles")
+//       .expect(200)
+//       .then(({ body: { articles } }) => {
+//         expect(articles).toBeInstanceOf(Array);
+//         articles.forEach((article) => {
+//           expect(article).toEqual(
+//             expect.objectContaining({
+//               author: expect.any(String),
+//               title: expect.any(String),
+//               article_id: expect.any(Number),
+//               topic: expect.any(String),
+//               created_at: expect.any(String),
+//               votes: expect.any(Number),
+//               comment_count: expect.any(Number),
+//             })
+//           );
+//         });
+//       });
+//   });
+// });
