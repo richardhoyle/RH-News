@@ -5,4 +5,4 @@ const getTopics = (req, res, next) => {
         res.status(200).send({ topics }))
 }
 
-module.exports = {getTopics}
+module.exports = { getTopics }
