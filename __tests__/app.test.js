@@ -73,3 +73,40 @@ describe("GET /api/articles", () => {
       });
   });
 });
+
+describe("GET /api/articles/:article_id", () => {
+  test("returns the article object with the correct properties when passed a valid article id", () => {
+    return request(app)
+      .get("/api/articles/1")
+      .expect(200)
+      .then(({ body: article }) => {
+        expect(article).toEqual({
+          article_id: 1,
+          title: "Living in the shadow of a great man",
+          topic: "mitch",
+          author: "butter_bridge",
+          body: "I find this existence challenging",
+          created_at: "2020-07-09T20:11:00.000Z",
+          votes: 100,
+        });
+      });
+  });
+  test("returns a 404 not found if the article number isn't valid", () => {
+    return request(app)
+      .get("/api/articles/99")
+      .expect(404)
+      .then((response) => {
+        const msg = response.body.msg;
+        expect(msg).toBe('No article found for article_id 99')
+    })
+  });
+  test("returns a 400 bad request if data type passed for article number is NaN", () => {
+    return request(app)
+    .get('/api/articles/banana')
+    .expect(400)
+      .then((response) => {
+        const msg = response.body.msg;
+        expect(msg).toBe('Bad Path')
+      })
+  })
+});
