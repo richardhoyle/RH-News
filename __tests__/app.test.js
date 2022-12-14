@@ -97,16 +97,16 @@ describe("GET /api/articles/:article_id", () => {
       .expect(404)
       .then((response) => {
         const msg = response.body.msg;
-        expect(msg).toBe('No article found for article_id 99')
-    })
+        expect(msg).toBe("No article found for article_id 99");
+      });
   });
   test("returns a 400 bad request if data type passed for article number is NaN", () => {
     return request(app)
-    .get('/api/articles/banana')
-    .expect(400)
+      .get("/api/articles/banana")
+      .expect(400)
       .then((response) => {
         const msg = response.body.msg;
-        expect(msg).toBe('Bad Path')
-      })
-  })
+        expect(msg).toBe("Bad Path");
+      });
+  });
 });
