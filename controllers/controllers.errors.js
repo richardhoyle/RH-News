@@ -4,7 +4,7 @@ const handleError404 = (req, res, next) => {
 
 const handleCustomErrors = (err, req, res, next) => {
   if (err.msg) {
-    res.status(err.status).send({ msg: err.msg });
+    res.status(err.status).send({ msg: err.msg })
   } else {
     next(err);
   }
@@ -17,7 +17,6 @@ const handlePsqlErrors = (err, req, res, next) => {
 };
 
 const handleError500 = (err, req, res, next) => {
-  console.log(err);
   res.status(500).send({ msg: "Server Error!" });
 };
 
