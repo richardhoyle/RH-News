@@ -106,7 +106,7 @@ describe("GET /api/articles/:article_id", () => {
       .expect(400)
       .then((response) => {
         const msg = response.body.msg;
-        expect(msg).toBe("Bad Path");
+        expect(msg).toBe("Bad Request");
       });
   });
 });
@@ -132,12 +132,12 @@ describe("GET /api/articles/:article_id/comments", () => {
         });
       });
   });
-  test("returns a 200 but no comments when an article_id is valid but there are no comments associated with that article", () => {
+  test("returns a 200 and an empty array when an article_id is valid but there are no comments associated with that article", () => {
     return request(app)
       .get("/api/articles/4/comments")
       .expect(200)
       .then(({ body: { comments } }) => {
-        expect(comments).toBeInstanceOf(Array); //maybe change this but think its right to respond with an empty array
+        expect(comments).toBeInstanceOf(Array);
         expect(comments.length).toBe(0);
       });
   });
@@ -156,10 +156,10 @@ describe("GET /api/articles/:article_id/comments", () => {
       .expect(400)
       .then((response) => {
         const msg = response.body.msg;
-        expect(msg).toBe("Bad Path");
+        expect(msg).toBe("Bad Request");
       });
   });
-  test("returns a 400 bad request if a word other than comments is used after article number", () => {
+  test("returns a 404 bad request if a word other than comments is used after article number", () => {
     return request(app)
       .get("/api/articles/9/bananas")
       .expect(404)
