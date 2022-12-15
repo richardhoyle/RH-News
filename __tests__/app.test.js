@@ -79,7 +79,7 @@ describe("GET /api/articles/:article_id", () => {
     return request(app)
       .get("/api/articles/1")
       .expect(200)
-      .then(({ body: article }) => {
+      .then(({ body: { article } }) => {
         expect(article).toEqual({
           article_id: 1,
           title: "Living in the shadow of a great man",
@@ -106,7 +106,66 @@ describe("GET /api/articles/:article_id", () => {
       .expect(400)
       .then((response) => {
         const msg = response.body.msg;
-        expect(msg).toBe("Bad Path");
+        expect(msg).toBe("Bad Request");
+      });
+  });
+});
+
+describe("GET /api/articles/:article_id/comments", () => {
+  test("returns an array of comments for a passed article_id, each comment having the correct properties", () => {
+    return request(app)
+      .get("/api/articles/9/comments")
+      .expect(200)
+      .then(({ body: { comments } }) => {
+        expect(comments).toBeInstanceOf(Array);
+        expect(comments.length).toBe(2);
+        comments.forEach((comment) => {
+          expect(comment).toEqual(
+            expect.objectContaining({
+              author: expect.any(String),
+              comment_id: expect.any(Number),
+              body: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+            })
+          );
+        });
+      });
+  });
+  test("returns a 200 and an empty array when an article_id is valid but there are no comments associated with that article", () => {
+    return request(app)
+      .get("/api/articles/4/comments")
+      .expect(200)
+      .then(({ body: { comments } }) => {
+        expect(comments).toBeInstanceOf(Array);
+        expect(comments.length).toBe(0);
+      });
+  });
+  test("returns a 404 not found if the article number isn't valid", () => {
+    return request(app)
+      .get("/api/articles/99/comments")
+      .expect(404)
+      .then((response) => {
+        const msg = response.body.msg;
+        expect(msg).toBe("No article found for article_id 99");
+      });
+  });
+  test("returns a 400 bad request if data type passed for article number is NaN whilst getting relevent comments", () => {
+    return request(app)
+      .get("/api/articles/banana/comments")
+      .expect(400)
+      .then((response) => {
+        const msg = response.body.msg;
+        expect(msg).toBe("Bad Request");
+      });
+  });
+  test("returns a 404 bad request if a word other than comments is used after article number", () => {
+    return request(app)
+      .get("/api/articles/9/bananas")
+      .expect(404)
+      .then((response) => {
+        const msg = response.body.msg;
+        expect(msg).toBe("Error, path not found...");
       });
   });
 });
