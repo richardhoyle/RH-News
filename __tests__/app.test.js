@@ -199,27 +199,31 @@ describe("POST /api/articles/:article_id/comments", () => {
       .post("/api/articles/99/comments")
       .send(newComment)
       .expect(404)
-      .then(({ body: { comment } }) => {
+      .then((response) => {
+        const comment = response.body.comment;
+        const msg = response.body.msg;
         expect(comment).toEqual(
           expect.not.objectContaining({
             author: "butter_bridge",
-            body: "Superb article, thumbs up from me!"
+            body: "Superb article, thumbs up from me!",
           })
-        );
+        )
+        expect(msg).toBe("No article found for article_id 99");
       });
   });
+
   test("returns a 400 bad request if data type passed for article number is NaN whilst POSTING a new comment", () => {
     const newComment = {
       username: "butter_bridge",
       body: "Superb article, thumbs up from me!",
     };
     return request(app)
-      .post("/api/articles/99/comments")
+      .post("/api/articles/banana/comments")
       .send(newComment)
-      .expect(404)
+      .expect(400)
       .then((response) => {
         const msg = response.body.msg;
-        expect(msg).toBe("No article found for article_id 99");
+        expect(msg).toBe("Bad Request");
       });
   });
 });
