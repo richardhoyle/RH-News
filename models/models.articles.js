@@ -28,4 +28,12 @@ exports.readCommentsById = (article_id) => {
     return comments;
   });
 };
-
+exports.insertComment = (newComment, article_id) => {
+  const { username, body } = newComment;
+  return db
+    .query(
+      "INSERT INTO comments (author, body, article_id) VALUES ($1, $2, $3) RETURNING *;",
+      [newComment.username, newComment.body, article_id]
+    )
+    .then(({ rows }) => {return rows[0] });
+};

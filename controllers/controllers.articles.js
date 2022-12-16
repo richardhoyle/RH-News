@@ -2,7 +2,7 @@ const {
   selectArticles,
   readArticleById,
   readCommentsById,
-  checkIfArticleExist,
+  insertComment,
 } = require("../models/models.articles");
 
 const getArticles = (req, res, next) => {
@@ -35,4 +35,20 @@ const getCommentsById = (req, res, next) => {
     });
 };
 
-module.exports = { getArticles, getArticleById, getCommentsById };
+const addComments = (req, res, next) => {
+  const {
+    params: { article_id },
+  } = req;
+  const articleComment = req.body;
+  readArticleById(article_id)
+    .then(() => {
+      insertComment(articleComment, article_id).then((comment) =>
+        res.status(201).send({ comment })
+      );
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+module.exports = { getArticles, getArticleById, getCommentsById, addComments };
