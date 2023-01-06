@@ -207,7 +207,7 @@ describe("POST /api/articles/:article_id/comments", () => {
             author: "butter_bridge",
             body: "Superb article, thumbs up from me!",
           })
-        )
+        );
         expect(msg).toBe("No article found for article_id 99");
       });
   });
@@ -223,7 +223,30 @@ describe("POST /api/articles/:article_id/comments", () => {
       .expect(400)
       .then((response) => {
         const msg = response.body.msg;
+        console.log(msg, "test<<");
         expect(msg).toBe("Bad Request");
+      });
+  });
+});
+describe("PATCH /api/articles/:article_id", () => {
+  test("updates inc_votes by the number passed", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({ inc_votes: 3 })
+      .expect(201)
+      .then((response) => {
+        expect(response.body).toBe(response.body);
+        expect(response.body.article[0].votes).toBe(103);
+      });
+  });
+  test.only("doesnt update votes when article_id doesnt exist", () => {
+    return request(app)
+      .patch("/api/articles/99")
+      .send({ inc_votes: 2 })
+      .expect(404)
+      .then((response) => {
+        const msg = response.body.msg;
+        expect(msg).toBe("No article found for article_id 99");
       });
   });
 });

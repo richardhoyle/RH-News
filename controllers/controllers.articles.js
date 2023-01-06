@@ -3,6 +3,7 @@ const {
   readArticleById,
   readCommentsById,
   insertComment,
+  updateArticle,
 } = require("../models/models.articles");
 
 const getArticles = (req, res, next) => {
@@ -34,7 +35,6 @@ const getCommentsById = (req, res, next) => {
       next(err);
     });
 };
-
 const addComments = (req, res, next) => {
   const {
     params: { article_id },
@@ -50,5 +50,24 @@ const addComments = (req, res, next) => {
       next(err);
     });
 };
+const patchArticle = (req, res, next) => {
+  const {
+    params: { article_id },
+  } = req;
+  const update = req.body.inc_votes;
+  //removing the below line fixes the hang but then doesnt throw an error when trying to update art 99
+readArticleById(article_id).then(() => {
+  updateArticle(article_id, update).then((article) => {
+    console.log(article, '<<article')
+    res.status(201).send({ article });
+  })
+  });
+};
 
-module.exports = { getArticles, getArticleById, getCommentsById, addComments };
+module.exports = {
+  getArticles,
+  getArticleById,
+  getCommentsById,
+  addComments,
+  patchArticle,
+};

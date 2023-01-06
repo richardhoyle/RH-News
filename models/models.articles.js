@@ -37,3 +37,12 @@ exports.insertComment = (newComment, article_id) => {
     )
     .then(({ rows }) => {return rows[0] });
 };
+exports.updateArticle = (article_id, update) => {
+  return db
+    .query('UPDATE articles SET votes = votes + $1 WHERE article_id = $2 RETURNING *;',
+      [update, article_id])
+    .then(
+  ({ rows }) => {
+      return rows;
+  })
+}
