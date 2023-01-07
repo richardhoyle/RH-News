@@ -169,3 +169,83 @@ describe("GET /api/articles/:article_id/comments", () => {
       });
   });
 });
+describe("POST /api/articles/:article_id/comments", () => {
+  test("creates and adds a new comment with username and body to the database", () => {
+    const newComment = {
+      username: "butter_bridge",
+      body: "Superb article, thumbs up from me!",
+    };
+    return request(app)
+      .post("/api/articles/9/comments")
+      .send(newComment)
+      .expect(201)
+      .then(({ body: { comment } }) => {
+        expect(comment).toEqual(
+          expect.objectContaining({
+            article_id: 9,
+            author: "butter_bridge",
+            body: "Superb article, thumbs up from me!",
+            votes: 0,
+          })
+        );
+      });
+  });
+  test("does not add a new comment when given an invalid artile id", () => {
+    const newComment = {
+      username: "butter_bridge",
+      body: "Superb article, thumbs up from me!",
+    };
+    return request(app)
+      .post("/api/articles/99/comments")
+      .send(newComment)
+      .expect(404)
+      .then((response) => {
+        const comment = response.body.comment;
+        const msg = response.body.msg;
+        expect(comment).toEqual(
+          expect.not.objectContaining({
+            author: "butter_bridge",
+            body: "Superb article, thumbs up from me!",
+          })
+        );
+        expect(msg).toBe("No article found for article_id 99");
+      });
+  });
+
+  test("returns a 400 bad request if data type passed for article number is NaN whilst POSTING a new comment", () => {
+    const newComment = {
+      username: "butter_bridge",
+      body: "Superb article, thumbs up from me!",
+    };
+    return request(app)
+      .post("/api/articles/banana/comments")
+      .send(newComment)
+      .expect(400)
+      .then((response) => {
+        const msg = response.body.msg;
+        expect(msg).toBe("Bad Request");
+      });
+  });
+});
+describe("PATCH /api/articles/:article_id", () => {
+  test("updates inc_votes by the number passed", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({ inc_votes: 3 })
+      .expect(201)
+      .then((response) => {
+        expect(response.body).toBe(response.body);
+        expect(response.body.article[0].votes).toBe(103);
+      });
+  });
+  test("doesnt update votes when article_id doesnt exist", () => {
+    return request(app)
+      .patch("/api/articles/99")
+      .send({ inc_votes: 2 })
+      .expect(404)
+      .then((response) => {
+        const msg = response.body.msg;
+        expect(msg).toBe("No article found for article_id 99");
+      });
+  });
+});

@@ -2,7 +2,8 @@ const {
   selectArticles,
   readArticleById,
   readCommentsById,
-  checkIfArticleExist,
+  insertComment,
+  updateArticle,
 } = require("../models/models.articles");
 
 const getArticles = (req, res, next) => {
@@ -34,5 +35,41 @@ const getCommentsById = (req, res, next) => {
       next(err);
     });
 };
+const addComments = (req, res, next) => {
+  const {
+    params: { article_id },
+  } = req;
+  const articleComment = req.body;
+  readArticleById(article_id)
+    .then(() => {
+      insertComment(articleComment, article_id).then((comment) =>
+        res.status(201).send({ comment })
+      );
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+const patchArticle = (req, res, next) => {
+  const {
+    params: { article_id },
+  } = req;
+  const update = req.body.inc_votes;
+readArticleById(article_id)
+  .then(() => {
+    updateArticle(article_id, update).then((article) => {
+      res.status(201).send({ article });
+    });
+  })
+  .catch((err) => {
+    next(err);
+  });
+};
 
-module.exports = { getArticles, getArticleById, getCommentsById };
+module.exports = {
+  getArticles,
+  getArticleById,
+  getCommentsById,
+  addComments,
+  patchArticle,
+};
