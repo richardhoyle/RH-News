@@ -223,7 +223,6 @@ describe("POST /api/articles/:article_id/comments", () => {
       .expect(400)
       .then((response) => {
         const msg = response.body.msg;
-        console.log(msg, "test<<");
         expect(msg).toBe("Bad Request");
       });
   });
@@ -239,7 +238,7 @@ describe("PATCH /api/articles/:article_id", () => {
         expect(response.body.article[0].votes).toBe(103);
       });
   });
-  test.only("doesnt update votes when article_id doesnt exist", () => {
+  test("doesnt update votes when article_id doesnt exist", () => {
     return request(app)
       .patch("/api/articles/99")
       .send({ inc_votes: 2 })

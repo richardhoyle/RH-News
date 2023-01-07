@@ -55,12 +55,14 @@ const patchArticle = (req, res, next) => {
     params: { article_id },
   } = req;
   const update = req.body.inc_votes;
-  //removing the below line fixes the hang but then doesnt throw an error when trying to update art 99
-readArticleById(article_id).then(() => {
-  updateArticle(article_id, update).then((article) => {
-    console.log(article, '<<article')
-    res.status(201).send({ article });
+readArticleById(article_id)
+  .then(() => {
+    updateArticle(article_id, update).then((article) => {
+      res.status(201).send({ article });
+    });
   })
+  .catch((err) => {
+    next(err);
   });
 };
 
