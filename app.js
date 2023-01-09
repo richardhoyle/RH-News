@@ -1,9 +1,11 @@
+const cors = require('cors');
 const express = require("express");
 const app = express();
 const { getTopics } = require('./controllers/controllers.topics');
 const { getArticles, getArticleById, getCommentsById, addComments, patchArticle } = require("./controllers/controllers.articles");
 const { handleError404, handleError500, handleCustomErrors, handlePsqlErrors } = require("./controllers/controllers.errors");
 
+app.use(cors());
 app.use(express.json());
 app.get('/api/topics', getTopics);
 app.get('/api/articles', getArticles);
